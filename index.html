@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Members Portal – Book Your Stay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --espresso:  #2C1A0E;
+      --brown:     #4A2E1A;
+      --sienna:    #8B4513;
+      --terra:     #C4714A;
+      --gold:      #C9956E;
+      --sand:      #F5EDD8;
+      --cream:     #FAF6EE;
+      --warm-gray: #8B7B6B;
+      --border:    rgba(44,26,14,0.12);
+      --white:     #FFFFFF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--espresso);
+      line-height: 1.7;
+    }
+
+    /* ── MEMBER BAR ── */
+    .member-bar {
+      background: var(--espresso);
+      padding: 0.45rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      letter-spacing: 0.8px;
+      color: rgba(245,237,216,0.6);
+    }
+    .member-bar strong { color: var(--gold); font-weight: 500; }
+    .member-bar-right { display: flex; gap: 1.5rem; align-items: center; }
+    .member-tier {
+      background: var(--gold);
+      color: var(--espresso);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250,246,238,0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--espresso);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .logo span { color: var(--terra); }
+    .logo sup {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.5rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+      vertical-align: super;
+      margin-left: 4px;
+    }
+    nav { display: flex; gap: 1.75rem; }
+    nav a {
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--brown);
+      letter-spacing: 0.3px;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--terra); }
+    .btn {
+      display: inline-block;
+      padding: 0.55rem 1.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      border: none;
+    }
+    .btn-terra { background: var(--terra); color: var(--white); }
+    .btn-terra:hover { background: var(--sienna); }
+    .btn-outline { background: transparent; color: var(--brown); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--terra); color: var(--terra); }
+
+    /* ── HERO / SEARCH ── */
+    .hero {
+      background: linear-gradient(160deg, var(--espresso) 0%, var(--brown) 55%, #6B3A22 100%);
+      padding: 4rem 2rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 60% 50% at 80% 30%, rgba(201,149,110,0.15) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(196,113,74,0.10) 0%, transparent 60%);
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+      font-weight: 300;
+      color: var(--sand);
+      line-height: 1.1;
+      max-width: 600px;
+      margin-bottom: 0.75rem;
+    }
+    .hero h1 em { font-style: italic; color: var(--gold); }
+    .hero-sub {
+      color: rgba(245,237,216,0.65);
+      font-size: 0.88rem;
+      font-weight: 300;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── SEARCH PANEL ── */
+    .search-panel {
+      background: var(--white);
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 -8px 40px rgba(44,26,14,0.2);
+      padding: 2rem 2rem 0;
+    }
+    .search-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .search-tab {
+      padding: 0.6rem 1.4rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--warm-gray);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      margin-bottom: -1px;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .search-tab.active {
+      color: var(--terra);
+      border-bottom-color: var(--terra);
+    }
+    .search-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 1rem;
+      align-items: end;
+      padding-bottom: 2rem;
+    }
+    .field label {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+      margin-bottom: 0.4rem;
+    }
+    .field input, .field select {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.88rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--espresso);
+      background: var(--cream);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--terra); }
+    .field input::placeholder { color: var(--warm-gray); }
+
+    /* ── MAIN CONTENT ── */
+    .content-wrap {
+      max-width: 1280px;
+      margin: 3rem auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* ── RESULTS ── */
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1.25rem;
+    }
+    .results-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--espresso);
+    }
+    .results-header span {
+      font-size: 0.78rem;
+      color: var(--warm-gray);
+    }
+    .sort-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .sort-chip {
+      padding: 0.3rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--warm-gray);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .sort-chip.active, .sort-chip:hover {
+      background: var(--terra);
+      color: var(--white);
+      border-color: var(--terra);
+    }
+
+    /* ── PROPERTY CARDS ── */
+    .property-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      margin-bottom: 1.25rem;
+      transition: box-shadow 0.3s;
+    }
+    .property-card:hover { box-shadow: 0 8px 28px rgba(44,26,14,0.1); }
+    .card-img {
+      height: 220px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .card-badge {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      background: var(--terra);
+      color: var(--white);
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+    }
+    .card-badge.gold { background: var(--gold); color: var(--espresso); }
+    .card-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card-location {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-bottom: 0.35rem;
+    }
+    .card-body h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--espresso);
+      margin-bottom: 0.4rem;
+    }
+    .card-body p {
+      font-size: 0.82rem;
+      color: var(--warm-gray);
+      font-weight: 300;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .card-amenities {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .amenity-tag {
+      font-size: 0.68rem;
+      color: var(--warm-gray);
+      background: var(--cream);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .price-block .from {
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+    }
+    .price-block .price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--espresso);
+      line-height: 1;
+    }
+    .price-block .per { font-size: 0.72rem; color: var(--warm-gray); }
+    .price-block .points {
+      font-size: 0.72rem;
+      color: var(--terra);
+      margin-top: 0.2rem;
+    }
+    .card-actions { display: flex; gap: 0.5rem; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+    .sidebar-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    .sidebar-card h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--espresso);
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .points-display {
+      background: linear-gradient(135deg, var(--espresso), var(--brown));
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .points-display .pts-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 300;
+      color: var(--gold);
+      display: block;
+      line-height: 1;
+    }
+    .points-display .pts-label {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(245,237,216,0.6);
+      margin-top: 0.25rem;
+    }
+    .benefit-list { list-style: none; }
+    .benefit-list li {
+      font-size: 0.8rem;
+      color: var(--warm-gray);
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .benefit-list li:last-child { border-bottom: none; }
+    .benefit-list li::before {
+      content: '✓';
+      color: var(--terra);
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+    .upcoming-trip {
+      background: var(--cream);
+      border-radius: 5px;
+      padding: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+    .upcoming-trip .trip-prop {
+      font-weight: 500;
+      font-size: 0.82rem;
+      color: var(--espresso);
+      margin-bottom: 0.2rem;
+    }
+    .upcoming-trip .trip-date {
+      font-size: 0.72rem;
+      color: var(--warm-gray);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--espresso);
+      color: rgba(245,237,216,0.55);
+      margin-top: 4rem;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 3rem 2rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--sand);
+      margin-bottom: 0.75rem;
+    }
+    .footer-logo span { color: var(--gold); }
+    .footer-col h5 {
+      font-size: 0.62rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.9rem;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: rgba(245,237,216,0.5);
+      text-decoration: none;
+      margin-bottom: 0.45rem;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--sand); }
+    .footer-bottom {
+      border-top: 1px solid rgba(245,237,216,0.08);
+      text-align: center;
+      padding: 1rem 2rem;
+      font-size: 0.72rem;
+      color: rgba(245,237,216,0.25);
+    }
+
+    @media (max-width: 1000px) {
+      .content-wrap { grid-template-columns: 1fr; }
+      .property-card { grid-template-columns: 1fr; }
+      .card-img { height: 200px; }
+      .search-row { grid-template-columns: 1fr 1fr; }
+      nav { display: none; }
+    }
+    @media (max-width: 600px) {
+      .search-row { grid-template-columns: 1fr; }
+    }
+  </style>
+
+ <!-- ═══════════════════════════════════════════
+       CXone Chat + Guide Widget
+       BU: 5748  |  Channel: Members Booking Engine
+       Bot: MBE Bot  |  agentId: 69480059
+  ════════════════════════════════════════════ -->
+  <script>
+    (function(n, u) {
+      window.CXoneDfo = n;
+      window[n] = window[n] || function() {
+        (window[n].q = window[n].q || []).push(arguments);
+      };
+      window[n].u = u;
+      var e = document.createElement("script");
+      e.type = "module";
+      e.src = u + "?" + Math.round(Date.now() / 1e3 / 3600);
+      document.head.appendChild(e);
+    })("cxone", "https://web-modules-de-na1.niceincontact.com/loader/1/loader.js");
+
+    cxone("init", "5748");
+    cxone("guide", "init");
+
+    // ── Prefill member contact fields ──
+    cxone("chat", "hideAssignedAgent");
+    cxone("chat", "enableCloseIcon", true);
+    cxone("chat", "setCustomerName", "Kurtis Blow");
+    cxone("chat", "setContactCustomField", "email", "kblow@email.com");
+    cxone("chat", "setContactCustomField", "phone", "4801231234");
+    cxone("chat", "setContactCustomField", "new_lang", "en-US");
+
+    // ── Guide sizing ──
+    cxone("guide", "setDesiredGuideWidth", "400px");
+    cxone("guide", "setDesiredGuideHeight", "600px");
+    cxone("guide", "setButtonSize", "70px");
+
+    // ── Bot/agent reply box toggle ──────────────────────────────────────────
+    // Required: must be called before onAnyPushUpdate to activate the push stream.
+    cxone("chat", "setAllowedExternalMessageTypes", [
+      "MESSAGE_SENT",
+      "MESSAGE_RECEIVED",
+    ]);
+
+    // Use the agentId shown in CXone UserHub → ACD → Users (search "bot").
+    // Do NOT use payload.data.inboxAssignee.id — that is an internal system ID
+    // not visible anywhere in the UI.
+    var BOT_USER_ID = 69480059; // MBE Bot
+    var isBotMode = false;
+
+    // ⚠️ Single source of truth for ALL chat widget CSS.
+    // setCustomCss is a full override — every call replaces everything previously
+    // applied. Never add a standalone setCustomCss call elsewhere or it will wipe
+    // out the branding and reply box logic set here.
+    function applyAllChatCss(botMode) {
+      var replyBoxCss = botMode
+        ? `
+            [data-selector="REPLY_BOX"],
+            [data-selector="TEXTAREA"],
+            [data-selector="INPUT"],
+            [data-selector="SEND_BUTTON"] {
+                display: none !important;
+            }
+          `
+        : `
+            [data-selector="REPLY_BOX"],
+            [data-selector="TEXTAREA"],
+            [data-selector="INPUT"],
+            [data-selector="SEND_BUTTON"] {
+                display: revert !important;
+            }
+          `;
+
+      cxone("chat", "setCustomCss", `
+        /* ── Branding ── */
+        [data-selector="HEADER"] {
+          background-image: url("https://images.contentstack.io/v3/assets/blt440de00c5519ec3c/blt5b2b17a4f2e5789b/logo-vidanta.svg") !important;
+          background-repeat: no-repeat !important;
+          background-size: 50% !important;
+          background-position: left 25px center !important;
+          background-color: #2C1A0E !important;
+          height: 85px !important;
+        }
+        [data-selector="TEXT_BUTTON"] {
+          border: 1px solid #2C1A0E !important;
+          color: #C4714A !important;
+        }
+
+        /* ── Reply box (bot vs. agent) ── */
+        ${replyBoxCss}
+      `);
+    }
+
+    // Apply full CSS on load — reply box visible, bot mode off
+    setTimeout(function() { applyAllChatCss(false); }, 1000);
+
+    // Re-apply full CSS on every assignee change with updated bot state
+    cxone("chat", "onAnyPushUpdate", function(payload) {
+
+      // ── BOT ID DISCOVERY LOGGING ─────────────────────────────────────────
+      // Activate by adding ?cxdebug to the page URL. Safe to leave in production.
+      var CX_DEBUG = window.location.search.includes('cxdebug');
+      if (CX_DEBUG && payload?.eventType === "CaseInboxAssigneeChanged") {
+        var _user = payload?.data?.case?.inboxAssigneeUser;
+        console.group("[CXone] CaseInboxAssigneeChanged");
+        console.log("agentId (UserHub-visible):   ", payload?.data?.inboxAssignee?.agentId);
+        console.log("inboxAssigneeUser.isBotUser: ", _user?.isBotUser);
+        console.log("inboxAssigneeUser.firstName: ", _user?.firstName);
+        console.log("loginUsername:               ", payload?.data?.inboxAssignee?.loginUsername);
+        console.log("nickname:                    ", payload?.data?.inboxAssignee?.nickname);
+        console.log("── Full payload ──");
+        console.log(JSON.parse(JSON.stringify(payload)));
+        console.groupEnd();
+      }
+      // ── END LOGGING ───────────────────────────────────────────────────────
+
+      if (payload?.eventType !== "CaseInboxAssigneeChanged") return;
+
+      var assigneeUser = payload?.data?.case?.inboxAssigneeUser;
+      var agentId      = payload?.data?.inboxAssignee?.agentId;
+
+      var botMode =
+        assigneeUser?.isBotUser === true || // primary: reliable flag in payload
+        agentId === BOT_USER_ID;            // fallback: UserHub-visible agentId
+
+      if (botMode === isBotMode) return; // no change, skip re-render
+      isBotMode = botMode;
+      applyAllChatCss(isBotMode);
+    });
+
+    // ── Focus outline fix (accessibility) ──
+    setTimeout(function() {
+      var s = document.createElement("style");
+      s.innerHTML = `
+        #cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]:focus,
+        #cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]:focus-visible {
+          outline-color: #2C1A0E !important;
+          outline-width: 0.2em !important;
+          outline-style: solid !important;
+          outline-offset: 0px !important;
+        }
+      `;
+      document.head.appendChild(s);
+    }, 1000);
+  </script>
+</head>
+<body>
+
+  <!-- MEMBER BAR -->
+  <div class="member-bar">
+    <span>Welcome back, <strong>Kurtis Blow</strong></span>
+    <div class="member-bar-right">
+      <span>Member #VW-00421</span>
+      <span class="member-tier">Gold</span>
+      <span>Sign Out</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">Vidanta<span>World</span><sup>Members</sup></div>
+      <nav>
+        <a href="#">My Bookings</a>
+        <a href="#">Properties</a>
+        <a href="#">Experiences</a>
+        <a href="#">Points & Rewards</a>
+        <a href="#">Support</a>
+      </nav>
+      <a href="#" class="btn btn-terra">Book Now</a>
+    </div>
+  </header>
+
+  <!-- HERO + SEARCH -->
+  <div class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Member Exclusive Access</p>
+      <h1>Reserve Your Next <em>Escape</em></h1>
+      <p class="hero-sub">Access member rates, redeem points, and book seamlessly across all Vidanta properties — exclusively for Gold & Platinum members.</p>
+
+      <div class="search-panel">
+        <div class="search-tabs">
+          <button class="search-tab active">Stays</button>
+          <button class="search-tab">Experiences</button>
+          <button class="search-tab">Dining</button>
+          <button class="search-tab">Spa</button>
+        </div>
+        <div class="search-row">
+          <div class="field">
+            <label>Destination / Property</label>
+            <select>
+              <option>All Properties</option>
+              <option>Nuevo Nayarit</option>
+              <option>Los Cabos</option>
+              <option>Riviera Maya</option>
+              <option>Puerto Vallarta</option>
+              <option>Acapulco</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Check In</label>
+            <input type="date">
+          </div>
+          <div class="field">
+            <label>Check Out</label>
+            <input type="date">
+          </div>
+          <div class="field">
+            <label>Guests</label>
+            <select>
+              <option>2 Adults</option>
+              <option>1 Adult</option>
+              <option>2 Adults, 1 Child</option>
+              <option>2 Adults, 2 Children</option>
+            </select>
+          </div>
+          <button class="btn btn-terra" style="padding:0.65rem 1.6rem;white-space:nowrap;height:42px;">Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="content-wrap">
+
+    <!-- RESULTS -->
+    <div class="results-col">
+      <div class="results-header">
+        <h2>Available Properties</h2>
+        <span>Showing member rates</span>
+      </div>
+      <div class="sort-row">
+        <button class="sort-chip active">Recommended</button>
+        <button class="sort-chip">Price: Low–High</button>
+        <button class="sort-chip">Points Value</button>
+        <button class="sort-chip">Availability</button>
+      </div>
+
+      <!-- Card 1 -->
+      <div class="property-card">
+        <div class="card-img" style="background-image:url('https://images.contentstack.io/v3/assets/blt440de00c5519ec3c/blt3a51c2e17fb93e56/ocean-pool-nayarit.jpg'); background-color:#4A2E1A;">
+          <span class="card-badge">Member Rate</span>
+        </div>
+        <div class="card-body">
+          <div>
+            <p class="card-location">Nuevo Nayarit</p>
+            <h3>Ocean Breeze Resort</h3>
+            <p>Panoramic Pacific views, multi-level infinity pools, and championship golf in Mexico's premier coastal destination.</p>
+            <div class="card-amenities">
+              <span class="amenity-tag">🏊 Pools</span>
+              <span class="amenity-tag">⛳ Golf</span>
+              <span class="amenity-tag">💆 Spa</span>
+              <span class="amenity-tag">🍽️ 8 Restaurants</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="price-block">
+              <span class="from">From</span>
+              <div class="price">$289 <span class="per">/ night</span></div>
+              <div class="points">or 4,200 pts / night</div>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-outline">Details</button>
+              <button class="btn btn-terra">Reserve</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="property-card">
+        <div class="card-img" style="background-image:url('https://images.contentstack.io/v3/assets/blt440de00c5519ec3c/bltc926cba72440c584/66c915e9160668a94e056819/6.jpg'); background-color:#1a2d45;">
+          <span class="card-badge gold">Top Pick</span>
+        </div>
+        <div class="card-body">
+          <div>
+            <p class="card-location">Los Cabos</p>
+            <h3>Grand Luxxe Los Cabos</h3>
+            <p>Dramatic desert-meets-sea landscape with exclusive penthouses, private beach access, and curated culinary experiences.</p>
+            <div class="card-amenities">
+              <span class="amenity-tag">🏖️ Private Beach</span>
+              <span class="amenity-tag">🥂 Penthouse Suites</span>
+              <span class="amenity-tag">💆 Full-Service Spa</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="price-block">
+              <span class="from">From</span>
+              <div class="price">$420 <span class="per">/ night</span></div>
+              <div class="points">or 6,100 pts / night</div>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-outline">Details</button>
+              <button class="btn btn-terra">Reserve</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="property-card">
+        <div class="card-img" style="background-image:url('https://images.contentstack.io/v3/assets/blt440de00c5519ec3c/blte4531dc3c3228951/6834ca6ecf52eec218aed560/Elegant-Presidential_Suite_0006.jpg'); background-color:#0d1520;">
+          <span class="card-badge">Member Rate</span>
+        </div>
+        <div class="card-body">
+          <div>
+            <p class="card-location">Riviera Maya</p>
+            <h3>Vidanta Riviera Maya</h3>
+            <p>Lush jungle surroundings, cenote-inspired pools, and world-class entertainment steps from the Caribbean coast.</p>
+            <div class="card-amenities">
+              <span class="amenity-tag">🌿 Jungle Setting</span>
+              <span class="amenity-tag">🎭 Joyà Cirque</span>
+              <span class="amenity-tag">🍹 6 Bars</span>
+              <span class="amenity-tag">⛳ Golf</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="price-block">
+              <span class="from">From</span>
+              <div class="price">$315 <span class="per">/ night</span></div>
+              <div class="points">or 4,750 pts / night</div>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-outline">Details</button>
+              <button class="btn btn-terra">Reserve</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="sidebar-card">
+        <h4>Your Member Points</h4>
+        <div class="points-display">
+          <span class="pts-num">24,850</span>
+          <span class="pts-label">Available Points</span>
+        </div>
+        <ul class="benefit-list">
+          <li>Member-exclusive rates active</li>
+          <li>Priority room upgrades</li>
+          <li>Late checkout (subject to availability)</li>
+          <li>Complimentary resort credit: $50</li>
+        </ul>
+        <button class="btn btn-outline" style="width:100%;margin-top:1rem;padding:0.6rem;">View Points History</button>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>Upcoming Trips</h4>
+        <div class="upcoming-trip">
+          <div class="trip-prop">Ocean Breeze Resort</div>
+          <div class="trip-date">Jul 14 – Jul 21, 2026 · 2 Guests</div>
+        </div>
+        <div class="upcoming-trip">
+          <div class="trip-prop">VidantaWorld's ELEGANT</div>
+          <div class="trip-date">Sep 3 – Sep 10, 2026 · 2 Guests</div>
+        </div>
+        <button class="btn btn-outline" style="width:100%;margin-top:0.25rem;padding:0.6rem;">Manage Reservations</button>
+      </div>
+
+      <div class="sidebar-card" style="background:linear-gradient(135deg,var(--espresso),var(--brown));border-color:transparent;">
+        <h4 style="color:var(--gold);border-color:rgba(245,237,216,0.12);">Need Help Booking?</h4>
+        <p style="font-size:0.82rem;color:rgba(245,237,216,0.65);font-weight:300;line-height:1.7;margin-bottom:1.25rem;">A member services specialist can help you find the perfect property, apply your points, or arrange special experiences.</p>
+        <button class="btn btn-terra" style="width:100%;">Chat with Member Services</button>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">Vidanta<span>World</span> Members</div>
+        <p style="font-size:0.8rem;font-weight:300;max-width:220px;">Exclusive access to Mexico's finest resort destinations, reserved for our most valued members.</p>
+      </div>
+      <div class="footer-col">
+        <h5>My Account</h5>
+        <a href="#">Profile & Preferences</a>
+        <a href="#">My Bookings</a>
+        <a href="#">Points History</a>
+        <a href="#">Member Benefits</a>
+      </div>
+      <div class="footer-col">
+        <h5>Properties</h5>
+        <a href="#">Nuevo Nayarit</a>
+        <a href="#">Los Cabos</a>
+        <a href="#">Riviera Maya</a>
+        <a href="#">Puerto Vallarta</a>
+      </div>
+      <div class="footer-col">
+        <h5>Support</h5>
+        <a href="#">Member Services Chat</a>
+        <a href="#">FAQs</a>
+        <a href="#">Cancellation Policy</a>
+        <a href="tel:18772822115">1-877-282-2115</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms & Conditions</a>
+      <span>© 2026 VidantaWorld Members Portal. All rights reserved.</span>
+    </div>
+  </footer>
+
+</body>
+</html>
